@@ -1,0 +1,13 @@
+{
+  "name": "菜菜杀手",
+  "bio": "简介未更新-待开发",
+  "avatar_url": "https://github.com/mnga2048.png",
+  "social": {
+    "github": "https://github.com/mnga2048",
+    "email": "1547357377@qq.com"
+  },
+  "skills": ["Python", "JavaScript", "C/C++", "HTML/CSS", "Git", "Linux","以上都不会"],
+  "exclude_dirs": [".github", ".git"],
+  "private_password": "200212",
+  "private_dirs": ["私人"]
+}

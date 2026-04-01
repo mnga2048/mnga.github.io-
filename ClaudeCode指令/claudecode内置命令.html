@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code 内置命令参考</title>
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --border: #2a2a2a;
+            --text: #e0e0e0;
+            --text-muted: #888;
+            --accent: #d4a27f;
+            --accent-hover: #e8b896;
+            --code-bg: #111;
+            --table-stripe: #151515;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 {
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9em;
+            margin-bottom: 32px;
+        }
+        .subtitle code {
+            background: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box input:focus {
+            border-color: var(--accent);
+        }
+        .search-box input::placeholder {
+            color: var(--text-muted);
+        }
+        .section {
+            margin-bottom: 32px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .section-header {
+            padding: 16px 24px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-header:hover {
+            background: rgba(212, 162, 127, 0.05);
+        }
+        .section-header .arrow {
+            transition: transform 0.2s;
+            font-size: 0.8em;
+        }
+        .section-header.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+        .section-body {
+            padding: 0;
+            transition: max-height 0.3s ease;
+        }
+        .section-body.hidden {
+            max-height: 0 !important;
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 24px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: var(--table-stripe); }
+        tr:hover { background: rgba(212, 162, 127, 0.08); }
+        .cmd {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            background: var(--code-bg);
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: var(--accent-hover);
+            font-size: 0.9em;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .desc { font-size: 0.95em; }
+        .alias {
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            display: none;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        @media (max-width: 768px) {
+            body { padding: 20px 12px; }
+            h1 { font-size: 1.5em; }
+            th, td { padding: 10px 14px; }
+            .cmd { font-size: 0.82em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Claude Code 内置命令参考</h1>
+        <p class="subtitle">
+            在 Claude Code 中输入 <code>/</code> 查看所有可用命令 &middot;
+            <code>&lt;arg&gt;</code> 必需参数 &middot;
+            <code>[arg]</code> 可选参数
+        </p>
+
+        <div class="search-box">
+            <input type="text" id="search" placeholder="搜索命令..." autofocus>
+        </div>
+
+        <div class="no-results" id="noResults">没有找到匹配的命令</div>
+
+        <!-- 通用命令 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>通用命令</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/help</span></td><td class="desc">显示帮助和可用命令</td></tr>
+                        <tr><td><span class="cmd">/exit</span></td><td class="desc">退出 CLI <span class="alias">别名：/quit</span></td></tr>
+                        <tr><td><span class="cmd">/login</span></td><td class="desc">登录到您的 Anthropic 账户</td></tr>
+                        <tr><td><span class="cmd">/logout</span></td><td class="desc">从您的 Anthropic 账户登出</td></tr>
+                        <tr><td><span class="cmd">/doctor</span></td><td class="desc">诊断并验证 Claude Code 安装和设置</td></tr>
+                        <tr><td><span class="cmd">/release-notes</span></td><td class="desc">查看完整的更改日志</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 对话管理 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>对话管理</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/clear</span></td><td class="desc">清除对话历史记录并释放上下文 <span class="alias">别名：/reset、/new</span></td></tr>
+                        <tr><td><span class="cmd">/compact [instructions]</span></td><td class="desc">压缩对话，可选择性地提供焦点说明</td></tr>
+                        <tr><td><span class="cmd">/context</span></td><td class="desc">将当前上下文使用情况可视化为彩色网格</td></tr>
+                        <tr><td><span class="cmd">/copy [N]</span></td><td class="desc">将最后一个助手响应复制到剪贴板，N 表示第 N 个最新响应</td></tr>
+                        <tr><td><span class="cmd">/export [filename]</span></td><td class="desc">将当前对话导出为纯文本</td></tr>
+                        <tr><td><span class="cmd">/branch [name]</span></td><td class="desc">在此点创建当前对话的分支 <span class="alias">别名：/fork</span></td></tr>
+                        <tr><td><span class="cmd">/resume [session]</span></td><td class="desc">按 ID 或名称恢复对话 <span class="alias">别名：/continue</span></td></tr>
+                        <tr><td><span class="cmd">/rename [name]</span></td><td class="desc">重命名当前会话</td></tr>
+                        <tr><td><span class="cmd">/rewind</span></td><td class="desc">将对话和/或代码倒回到上一个点 <span class="alias">别名：/checkpoint</span></td></tr>
+                        <tr><td><span class="cmd">/btw &lt;question&gt;</span></td><td class="desc">提出快速附加问题，无需添加到对话中</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 模型与设置 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>模型与设置</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/model [model]</span></td><td class="desc">选择或更改 AI 模型</td></tr>
+                        <tr><td><span class="cmd">/effort [low|medium|high|max|auto]</span></td><td class="desc">设置模型工作量级别</td></tr>
+                        <tr><td><span class="cmd">/config</span></td><td class="desc">打开设置界面 <span class="alias">别名：/settings</span></td></tr>
+                        <tr><td><span class="cmd">/theme</span></td><td class="desc">更改颜色主题（浅色/深色/色盲友好/ANSI）</td></tr>
+                        <tr><td><span class="cmd">/fast [on|off]</span></td><td class="desc">切换快速模式</td></tr>
+                        <tr><td><span class="cmd">/vim</span></td><td class="desc">在 Vim 和普通编辑模式之间切换</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 文件与项目 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>文件与项目</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/add-dir &lt;path&gt;</span></td><td class="desc">向当前会话添加新的工作目录</td></tr>
+                        <tr><td><span class="cmd">/diff</span></td><td class="desc">打开交互式差异查看器，显示未提交的更改</td></tr>
+                        <tr><td><span class="cmd">/init</span></td><td class="desc">使用 CLAUDE.md 指南初始化项目</td></tr>
+                        <tr><td><span class="cmd">/security-review</span></td><td class="desc">分析待处理更改以查找安全漏洞</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 账户与使用 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>账户与使用</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/cost</span></td><td class="desc">显示令牌使用统计信息</td></tr>
+                        <tr><td><span class="cmd">/usage</span></td><td class="desc">显示计划使用限制和速率限制状态</td></tr>
+                        <tr><td><span class="cmd">/stats</span></td><td class="desc">可视化每日使用情况、会话历史记录、连续记录和模型偏好</td></tr>
+                        <tr><td><span class="cmd">/upgrade</span></td><td class="desc">打开升级页面以切换到更高的计划层级</td></tr>
+                        <tr><td><span class="cmd">/extra-usage</span></td><td class="desc">配置额外使用量以在达到速率限制时继续工作</td></tr>
+                        <tr><td><span class="cmd">/privacy-settings</span></td><td class="desc">查看和更新隐私设置（仅 Pro 和 Max 计划）</td></tr>
+                        <tr><td><span class="cmd">/passes</span></td><td class="desc">与朋友分享一周免费的 Claude Code</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 集成与连接 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>集成与连接</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/mcp</span></td><td class="desc">管理 MCP server 连接和 OAuth 身份验证</td></tr>
+                        <tr><td><span class="cmd">/ide</span></td><td class="desc">管理 IDE 集成并显示状态</td></tr>
+                        <tr><td><span class="cmd">/chrome</span></td><td class="desc">配置 Claude in Chrome 设置</td></tr>
+                        <tr><td><span class="cmd">/desktop</span></td><td class="desc">在 Claude Code Desktop 应用中继续会话（仅 macOS/Windows）<span class="alias">别名：/app</span></td></tr>
+                        <tr><td><span class="cmd">/mobile</span></td><td class="desc">显示二维码以下载 Claude 移动应用 <span class="alias">别名：/ios、/android</span></td></tr>
+                        <tr><td><span class="cmd">/remote-control</span></td><td class="desc">使此会话可从 claude.ai 远程控制 <span class="alias">别名：/rc</span></td></tr>
+                        <tr><td><span class="cmd">/remote-env</span></td><td class="desc">为网络会话配置默认远程环境</td></tr>
+                        <tr><td><span class="cmd">/install-github-app</span></td><td class="desc">为存储库设置 Claude GitHub Actions 应用</td></tr>
+                        <tr><td><span class="cmd">/install-slack-app</span></td><td class="desc">安装 Claude Slack 应用</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- GitHub 相关 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>GitHub 相关</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/pr-comments [PR]</span></td><td class="desc">获取并显示 GitHub PR 的评论（需要 gh CLI）</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 权限与安全 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>权限与安全</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/permissions</span></td><td class="desc">查看或更新权限 <span class="alias">别名：/allowed-tools</span></td></tr>
+                        <tr><td><span class="cmd">/sandbox</span></td><td class="desc">切换 sandbox mode</td></tr>
+                        <tr><td><span class="cmd">/hooks</span></td><td class="desc">查看工具事件的 hook 配置</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 自定义与扩展 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>自定义与扩展</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/agents</span></td><td class="desc">管理 agent 配置</td></tr>
+                        <tr><td><span class="cmd">/skills</span></td><td class="desc">列出可用的 skills</td></tr>
+                        <tr><td><span class="cmd">/plugin</span></td><td class="desc">管理 Claude Code plugins</td></tr>
+                        <tr><td><span class="cmd">/reload-plugins</span></td><td class="desc">重新加载所有活跃 plugins</td></tr>
+                        <tr><td><span class="cmd">/memory</span></td><td class="desc">编辑 CLAUDE.md 内存文件，管理 auto-memory</td></tr>
+                        <tr><td><span class="cmd">/keybindings</span></td><td class="desc">打开或创建快捷键配置文件</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 其他 -->
+        <div class="section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>其他</span><span class="arrow">▼</span>
+            </div>
+            <div class="section-body">
+                <table>
+                    <thead><tr><th>命令</th><th>用途</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="cmd">/plan [description]</span></td><td class="desc">直接从提示进入计划模式</td></tr>
+                        <tr><td><span class="cmd">/insights</span></td><td class="desc">生成会话分析报告</td></tr>
+                        <tr><td><span class="cmd">/schedule [description]</span></td><td class="desc">创建、更新、列出或运行 Cloud scheduled tasks</td></tr>
+                        <tr><td><span class="cmd">/status</span></td><td class="desc">打开设置界面（状态选项卡）</td></tr>
+                        <tr><td><span class="cmd">/statusline</span></td><td class="desc">配置 Claude Code 的状态行</td></tr>
+                        <tr><td><span class="cmd">/color [color|default]</span></td><td class="desc">设置提示栏颜色</td></tr>
+                        <tr><td><span class="cmd">/voice</span></td><td class="desc">切换推送通话语音听写</td></tr>
+                        <tr><td><span class="cmd">/tasks</span></td><td class="desc">列出并管理后台任务</td></tr>
+                        <tr><td><span class="cmd">/terminal-setup</span></td><td class="desc">为 Shift+Enter 等快捷键配置终端</td></tr>
+                        <tr><td><span class="cmd">/feedback [report]</span></td><td class="desc">提交关于 Claude Code 的反馈 <span class="alias">别名：/bug</span></td></tr>
+                        <tr><td><span class="cmd">/stickers</span></td><td class="desc">订购 Claude Code 贴纸</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>数据来源：<a href="https://code.claude.com/docs/zh-CN/commands" target="_blank">Claude Code 官方文档</a> &middot; 共计 70+ 内置命令</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            header.classList.toggle('collapsed');
+            body.classList.toggle('hidden');
+        }
+
+        document.getElementById('search').addEventListener('input', function () {
+            const query = this.value.toLowerCase().trim();
+            const sections = document.querySelectorAll('.section');
+            let hasResults = false;
+
+            sections.forEach(section => {
+                const rows = section.querySelectorAll('tbody tr');
+                let sectionVisible = false;
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    const match = !query || text.includes(query);
+                    row.style.display = match ? '' : 'none';
+                    if (match) sectionVisible = true;
+                });
+
+                section.style.display = sectionVisible ? '' : 'none';
+                if (sectionVisible) hasResults = true;
+
+                // Expand section if searching
+                if (query && sectionVisible) {
+                    section.querySelector('.section-header').classList.remove('collapsed');
+                    section.querySelector('.section-body').classList.remove('hidden');
+                }
+            });
+
+            document.getElementById('noResults').style.display = hasResults ? 'none' : 'block';
+        });
+    </script>
+</body>
+</html>

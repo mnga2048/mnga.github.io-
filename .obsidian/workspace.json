@@ -1,0 +1,234 @@
+{
+  "main": {
+    "id": "dcf81c6ef9129479",
+    "type": "split",
+    "children": [
+      {
+        "id": "4cfe240c48d23c35",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b39b601bb492bb56",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "私人/工作笔记/MODBUS-RTU协议.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "MODBUS-RTU协议"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "cfda8ac10f63db77",
+    "type": "split",
+    "children": [
+      {
+        "id": "5205e6d53d98f611",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "30c3285e8b1a72e4",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "06afac4e1485a30a",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "4ba03bda1722d667",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "cd2df82f7489f510",
+    "type": "split",
+    "children": [
+      {
+        "id": "c0dab5c9fe88950e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fb81a20c43c2b920",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "笔记/电机摸索/md文件/Measure_Motor_RPM测速实现原理.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Measure_Motor_RPM测速实现原理 的反向链接列表"
+            }
+          },
+          {
+            "id": "634ce3d3d529cb4f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "笔记/电机摸索/md文件/Measure_Motor_RPM测速实现原理.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Measure_Motor_RPM测速实现原理 的出链列表"
+            }
+          },
+          {
+            "id": "04dcba12f44fb57e",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "f965a3b310f5e691",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "0b549c5bf16f4045",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "笔记/电机摸索/md文件/Measure_Motor_RPM测速实现原理.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Measure_Motor_RPM测速实现原理 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "b39b601bb492bb56",
+  "lastOpenFiles": [
+    "私人/工作笔记/4.10 PID调速 6500RPM.md",
+    "私人/工作笔记/MODBUS-RTU协议.md",
+    "私人/工作笔记/4.3无刷电机f006总结.md",
+    "笔记/Linux学习/Linux命令.md",
+    "附件/Pasted image 20260410163457.png",
+    "附件/Pasted image 20260410163352.png",
+    "附件/Pasted image 20260409180704.png",
+    "附件/Pasted image 20260409180637.png",
+    "附件/Pasted image 20260409180425.png",
+    "附件/Pasted image 20260409180331.png",
+    "附件/Pasted image 20260409180115.png",
+    "附件/Pasted image 20260409180012.png",
+    "附件/Pasted image 20260409144231.png",
+    "附件/Pasted image 20260409140019.png",
+    "私人/工作笔记/4.10 低速200转控制.md",
+    "笔记/Linux学习/Wsl2配置.md",
+    "笔记/Linux学习/oh my zsh.md",
+    "笔记/Linux学习/在 Kali Linux 运行虚拟环境.md",
+    "附件/图片",
+    "笔记/AI学习/Transformer介绍.md",
+    "笔记/AI学习/TensorFlow 2 和 PyTorch.md",
+    "笔记/AI学习/PyTorch 和 TensorFlow框架对比.md",
+    "私人/工作笔记/3.28无刷电机f006总结.md",
+    "Pasted image 20260410180110.png.md",
+    "笔记/电机摸索/电机硬件/index.html",
+    "笔记/电机摸索/电机硬件/传感器/index.html",
+    "笔记/电机摸索/指令/index.html",
+    "笔记/电机摸索/外转子电机初步学习324/index.html",
+    "笔记/电机摸索/外转子电机初步学习324/md文件/index.html",
+    "笔记/电机摸索/六步换相文档330/index.html",
+    "笔记/电机摸索/PID调节/index.html",
+    "笔记/电机摸索/FOC/index.html",
+    "笔记/PDF/index.html",
+    "笔记/Linux学习/Linux 中 识别AMD显卡（RX 7700xt）.md",
+    "工作笔记/MODBUS-RTU协议.md",
+    "工作笔记/4.10 低速200转控制.md",
+    "工作笔记/4.3无刷电机f006总结.md",
+    "工作笔记/4.10 PID调速 6500RPM.md",
+    "工作笔记/3.28无刷电机f006总结.md",
+    "笔记/工作笔记/4.10 PID调速 6500RPM.md",
+    "笔记/工作笔记/3.28无刷电机f006总结.md",
+    "笔记/电机摸索/md文件/Measure_Motor_RPM测速实现原理.md",
+    "笔记/电机摸索/md文件/HALL_ElecPeriodCntBuf_说明.md",
+    "笔记/电机摸索/md文件/Factory_SelfCheck出厂检测分析.md",
+    "笔记/电机摸索/md文件/BLDC驱动程序开发指南.md"
+  ]
+}
