@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>校验工具</title>
+<style>
+  /* ========== CSS Variables ========== */
+  :root {
+    --bg: #f4f6fb;
+    --bg2: #ffffff;
+    --bg3: #eef1f8;
+    --shadow: rgba(0,0,0,0.08);
+    --text: #1e2132;
+    --text2: #6b7194;
+    --text3: #9ca3c4;
+    --accent: #2563eb;
+    --accent-hover: #3b82f6;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --border: #d4d9e8;
+    --input-bg: #f8f9fd;
+    --input-border: #cdd3e6;
+    --tag-bg: #e8ecf6;
+  }
+  [data-theme="dark"] {
+    --bg: #13152a;
+    --bg2: #1a1d38;
+    --bg3: #222645;
+    --shadow: rgba(0,0,0,0.5);
+    --text: #e0e2f0;
+    --text2: #8b8fb8;
+    --text3: #5a5e88;
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --border: #2e3358;
+    --input-bg: #14172e;
+    --input-border: #2e3358;
+    --tag-bg: #252950;
+  }
+
+  /* ========== Base ========== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 16px;
+    transition: background 0.3s, color 0.3s;
+  }
+  .container {
+    width: 100%;
+    max-width: 760px;
+    background: var(--bg2);
+    border-radius: 14px;
+    box-shadow: 0 4px 24px var(--shadow);
+    padding: 28px 32px;
+    transition: background 0.3s;
+  }
+
+  /* ========== Header ========== */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-size: 20px;
+    color: var(--accent);
+  }
+  .theme-toggle {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--bg3);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+
+  /* ========== Tabs ========== */
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .tab {
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab:hover { color: var(--accent); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ========== Common Elements ========== */
+  .params {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text2);
+  }
+  .params span { color: var(--accent); font-weight: 600; }
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  textarea {
+    width: 100%;
+    height: 90px;
+    background: var(--input-bg);
+    border: 1.5px solid var(--input-border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 15px;
+    padding: 12px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--text3); }
+
+  .mode-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 14px;
+  }
+  .mode-row label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text2);
+  }
+  .mode-row input[type="radio"] { accent-color: var(--accent); }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  button {
+    padding: 9px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  button:active { transform: scale(0.97); }
+  .btn-primary {
+    flex: 1;
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary {
+    flex: 0 0 80px;
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--border); }
+
+  /* ========== Results ========== */
+  .result-area {
+    margin-top: 20px;
+    display: none;
+  }
+  .result-area.show { display: block; }
+  .result-box {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .result-box .title {
+    font-size: 12px;
+    color: var(--text3);
+    margin-bottom: 5px;
+  }
+  .result-box .value {
+    font-size: 17px;
+    color: var(--success);
+    font-family: Consolas, monospace;
+    word-break: break-all;
+    user-select: all;
+  }
+  .result-box .value.big {
+    font-size: 22px;
+    letter-spacing: 2px;
+  }
+  .result-box .value.err { color: var(--danger); }
+  .copy-btn {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 2px 10px;
+    font-size: 11px;
+    background: var(--bg2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ========== History ========== */
+  .history { margin-top: 20px; }
+  .history h3 {
+    font-size: 13px;
+    color: var(--text3);
+    margin-bottom: 8px;
+  }
+  .history-list {
+    max-height: 180px;
+    overflow-y: auto;
+  }
+  .history-item {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 7px 12px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-family: Consolas, monospace;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .history-item:hover { background: var(--tag-bg); }
+  .history-item .data { color: var(--text2); }
+  .history-item .chk { color: var(--success); }
+  .history-item .s-ok { color: var(--success); font-size: 11px; }
+  .history-item .s-fail { color: var(--danger); font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>校验工具</h1>
+    <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">&#9790;</button>
+  </div>
+
+  <!-- ====== Tabs ====== -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('crc')">Modbus CRC16</div>
+    <div class="tab" onclick="switchTab('chk')">校验和（取反）</div>
+  </div>
+
+  <!-- ====== Panel 1: CRC16 ====== -->
+  <div id="panelCrc" class="panel active">
+    <div class="params">
+      算法参数：<span>多项式 0x8005</span> (反转 0xA001) |
+      <span>初始值 0xFFFF</span> |
+      <span>输入/输出反转: 是</span> |
+      <span>结果异或 0x0000</span>
+    </div>
+
+    <div class="mode-row">
+      <label><input type="radio" name="crcMode" value="calc" checked> 计算CRC</label>
+      <label><input type="radio" name="crcMode" value="verify"> 校验CRC</label>
+    </div>
+
+    <label>输入十六进制数据</label>
+    <textarea id="crcInput" placeholder="示例：01 03 00 00 00 0A"></textarea>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="calcCrc()">计算 / 校验</button>
+      <button class="btn-secondary" onclick="clearCrc()">清空</button>
+    </div>
+
+    <div id="crcResult" class="result-area">
+      <div class="result-box">
+        <div class="title">CRC16 结果</div>
+        <div class="value big" id="crcVal"></div>
+        <button class="copy-btn" onclick="copyText('crcVal')">复制</button>
+      </div>
+      <div class="result-box">
+        <div class="title">CRC 高字节(前) + 低字节(后)</div>
+        <div class="value" id="crcHL"></div>
+        <button class="copy-btn" onclick="copyText('crcHL')">复制</button>
+      </div>
+      <div class="result-box">
+        <div class="title">CRC 低字节(前) + 高字节(后) (Modbus标准)</div>
+        <div class="value" id="crcLH"></div>
+        <button class="copy-btn" onclick="copyText('crcLH')">复制</button>
+      </div>
+      <div class="result-box">
+        <div class="title">完整帧（低字节在前）</div>
+        <div class="value" id="crcFrame"></div>
+        <button class="copy-btn" onclick="copyText('crcFrame')">复制</button>
+      </div>
+      <div class="result-box" id="crcVerifyBox" style="display:none">
+        <div class="title">校验结果</div>
+        <div class="value" id="crcVerifyResult"></div>
+      </div>
+    </div>
+
+    <div class="history" id="crcHistorySection" style="display:none">
+      <h3>历史记录</h3>
+      <div class="history-list" id="crcHistoryList"></div>
+    </div>
+  </div>
+
+  <!-- ====== Panel 2: 校验和 ====== -->
+  <div id="panelChk" class="panel">
+    <div class="params">
+      帧格式：<span>FF FF</span>（固定帧头）+ 数据 + 校验字节<br>
+      校验算法：校验字节 = <span>~(ID + Length + CMD + Params...)</span> &amp; 0xFF（数据求和取反）
+    </div>
+
+    <div class="mode-row">
+      <label><input type="radio" name="chkMode" value="calc" checked> 计算校验和</label>
+      <label><input type="radio" name="chkMode" value="verify"> 校验整帧</label>
+    </div>
+
+    <label>输入十六进制数据（不含帧头 FF FF）</label>
+    <textarea id="chkInput" placeholder="示例：01 05 03 01 00（即 ID=01 LEN=05 CMD=03 数据=01 00）"></textarea>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="calcChk()">计算 / 校验</button>
+      <button class="btn-secondary" onclick="clearChk()">清空</button>
+    </div>
+
+    <div id="chkResult" class="result-area">
+      <div class="result-box">
+        <div class="title">数据求和</div>
+        <div class="value" id="chkSum"></div>
+      </div>
+      <div class="result-box">
+        <div class="title">取反后 (& 0xFF)</div>
+        <div class="value big" id="chkNot"></div>
+        <button class="copy-btn" onclick="copyText('chkNot')">复制</button>
+      </div>
+      <div class="result-box">
+        <div class="title">完整帧（含帧头 FF FF + 校验字节）</div>
+        <div class="value" id="chkFrame"></div>
+        <button class="copy-btn" onclick="copyText('chkFrame')">复制</button>
+      </div>
+      <div class="result-box" id="chkVerifyBox" style="display:none">
+        <div class="title">校验结果</div>
+        <div class="value" id="chkVerifyResult"></div>
+      </div>
+    </div>
+
+    <div class="history" id="chkHistorySection" style="display:none">
+      <h3>历史记录</h3>
+      <div class="history-list" id="chkHistoryList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== Theme ========== */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('.theme-toggle').textContent = isDark ? '\u2609' : '\u263D';
+  localStorage.setItem('theme', isDark ? 'light' : 'dark');
+}
+(function() {
+  const saved = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.querySelector('.theme-toggle').textContent = saved === 'dark' ? '\u263D' : '\u2609';
+})();
+
+/* ========== Tab Switch ========== */
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (name === 'crc' && i === 0) || (name === 'chk' && i === 1));
+  });
+  document.getElementById('panelCrc').classList.toggle('active', name === 'crc');
+  document.getElementById('panelChk').classList.toggle('active', name === 'chk');
+}
+
+/* ========== Parse Hex ========== */
+function parseHex(str) {
+  str = str.trim().replace(/0x/gi, '').replace(/[,;，；\n\r]+/g, ' ');
+  if (!str) return null;
+  const parts = str.split(/\s+/);
+  const bytes = [];
+  for (const p of parts) {
+    if (!p) continue;
+    if (p.length > 2) {
+      for (let i = 0; i < p.length; i += 2) {
+        const b = p.substr(i, 2);
+        if (/^[0-9a-fA-F]{1,2}$/.test(b)) bytes.push(parseInt(b, 16));
+        else return null;
+      }
+    } else if (/^[0-9a-fA-F]{1,2}$/.test(p)) {
+      bytes.push(parseInt(p, 16));
+    } else return null;
+  }
+  return bytes.length > 0 ? bytes : null;
+}
+
+function toHex2(v) { return (v & 0xFF).toString(16).toUpperCase().padStart(2, '0'); }
+
+function copyText(id) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent.replace(/\s+/g, ' '));
+}
+
+/* ========== CRC16 Modbus ========== */
+function crc16Modbus(data) {
+  let crc = 0xFFFF;
+  for (let i = 0; i < data.length; i++) {
+    crc ^= data[i];
+    for (let j = 0; j < 8; j++) {
+      crc = (crc & 1) ? ((crc >> 1) ^ 0xA001) : (crc >> 1);
+    }
+  }
+  return crc & 0xFFFF;
+}
+
+const crcHistory = [];
+
+function calcCrc() {
+  const data = parseHex(document.getElementById('crcInput').value);
+  if (!data) { alert('请输入有效十六进制数据'); return; }
+
+  const mode = document.querySelector('input[name="crcMode"]:checked').value;
+  const crc = crc16Modbus(data);
+  const hi = (crc >> 8) & 0xFF, lo = crc & 0xFF;
+  const dataStr = data.map(toHex2).join(' ');
+
+  document.getElementById('crcVal').textContent = '0x' + crc.toString(16).toUpperCase().padStart(4, '0');
+  document.getElementById('crcHL').textContent = toHex2(hi) + ' ' + toHex2(lo);
+  document.getElementById('crcLH').textContent = toHex2(lo) + ' ' + toHex2(hi);
+  document.getElementById('crcFrame').textContent = dataStr + ' ' + toHex2(lo) + ' ' + toHex2(hi);
+
+  const vBox = document.getElementById('crcVerifyBox');
+  const vRes = document.getElementById('crcVerifyResult');
+
+  if (mode === 'verify' && data.length >= 3) {
+    const payload = data.slice(0, -2);
+    const recvCrc = (data[data.length - 2] << 8) | data[data.length - 1];
+    const calcVal = crc16Modbus(payload);
+    if (recvCrc === calcVal) {
+      vRes.textContent = '校验通过！接收 0x' + recvCrc.toString(16).toUpperCase().padStart(4, '0') + ' = 计算 0x' + calcVal.toString(16).toUpperCase().padStart(4, '0');
+      vRes.className = 'value'; vRes.style.color = 'var(--success)';
+    } else {
+      vRes.textContent = '校验失败！接收 0x' + recvCrc.toString(16).toUpperCase().padStart(4, '0') + ' != 计算 0x' + calcVal.toString(16).toUpperCase().padStart(4, '0');
+      vRes.className = 'value err';
+    }
+    vBox.style.display = 'block';
+    crcHistory.unshift({ data: dataStr, chk: toHex2(lo) + toHex2(hi), ok: recvCrc === calcVal, mode: 'verify' });
+  } else {
+    vBox.style.display = 'none';
+    crcHistory.unshift({ data: dataStr, chk: toHex2(lo) + toHex2(hi), ok: true, mode: 'calc' });
+  }
+
+  document.getElementById('crcResult').classList.add('show');
+  renderHistory('crc');
+}
+
+function clearCrc() {
+  document.getElementById('crcInput').value = '';
+  document.getElementById('crcResult').classList.remove('show');
+}
+
+/* ========== Checksum (FF FF header, sum negate) ========== */
+const chkHistory = [];
+
+function calcChk() {
+  const data = parseHex(document.getElementById('chkInput').value);
+  if (!data || data.length < 1) { alert('请输入有效十六进制数据'); return; }
+
+  const mode = document.querySelector('input[name="chkMode"]:checked').value;
+
+  if (mode === 'calc') {
+    // 计算校验和：输入为 FF FF 之后的数据部分
+    const sum = data.reduce((a, b) => a + b, 0);
+    const chk = (~sum) & 0xFF;
+    const dataStr = data.map(toHex2).join(' ');
+
+    document.getElementById('chkSum').textContent = '0x' + sum.toString(16).toUpperCase() + ' (' + sum + ')';
+    document.getElementById('chkNot').textContent = '0x' + toHex2(chk);
+    document.getElementById('chkFrame').textContent = 'FF FF ' + dataStr + ' ' + toHex2(chk);
+    document.getElementById('chkVerifyBox').style.display = 'none';
+
+    chkHistory.unshift({ data: dataStr, chk: toHex2(chk), ok: true, mode: 'calc' });
+  } else {
+    // 校验模式：输入含 FF FF 帧头的完整帧，或不含帧头但含校验字节
+    let frame;
+    // 判断是否包含帧头 FF FF
+    if (data[0] === 0xFF && data[1] === 0xFF) {
+      frame = data;
+    } else {
+      frame = [0xFF, 0xFF, ...data];
+    }
+
+    if (frame.length < 4) { alert('帧太短，至少需要 FF FF + 1字节数据 + 1字节校验'); return; }
+
+    const payload = frame.slice(2, -1); // 去掉帧头和校验字节
+    const recvChk = frame[frame.length - 1];
+    const sum = payload.reduce((a, b) => a + b, 0);
+    const calcChkVal = (~sum) & 0xFF;
+    const frameStr = frame.map(toHex2).join(' ');
+    const payloadStr = payload.map(toHex2).join(' ');
+
+    document.getElementById('chkSum').textContent = '0x' + sum.toString(16).toUpperCase() + ' (' + sum + ')';
+    document.getElementById('chkNot').textContent = '0x' + toHex2(calcChkVal);
+
+    const vBox = document.getElementById('chkVerifyBox');
+    const vRes = document.getElementById('chkVerifyResult');
+
+    if (recvChk === calcChkVal) {
+      vRes.textContent = '校验通过！接收 0x' + toHex2(recvChk) + ' = 计算 0x' + toHex2(calcChkVal);
+      vRes.className = 'value'; vRes.style.color = 'var(--success)';
+      document.getElementById('chkFrame').textContent = frameStr;
+    } else {
+      vRes.textContent = '校验失败！接收 0x' + toHex2(recvChk) + ' != 计算 0x' + toHex2(calcChkVal);
+      vRes.className = 'value err';
+      document.getElementById('chkFrame').textContent = frameStr + '  (正确应为 ' + toHex2(calcChkVal) + ')';
+    }
+    vBox.style.display = 'block';
+
+    chkHistory.unshift({ data: payloadStr, chk: toHex2(recvChk), ok: recvChk === calcChkVal, mode: 'verify' });
+  }
+
+  document.getElementById('chkResult').classList.add('show');
+  renderHistory('chk');
+}
+
+function clearChk() {
+  document.getElementById('chkInput').value = '';
+  document.getElementById('chkResult').classList.remove('show');
+}
+
+/* ========== History Render ========== */
+function renderHistory(type) {
+  const arr = type === 'crc' ? crcHistory : chkHistory;
+  const sec = document.getElementById(type + 'HistorySection');
+  const list = document.getElementById(type + 'HistoryList');
+
+  if (arr.length === 0) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  list.innerHTML = arr.slice(0, 20).map((h, i) => {
+    const status = h.mode === 'verify'
+      ? (h.ok ? '<span class="s-ok">PASS</span>' : '<span class="s-fail">FAIL</span>')
+      : '';
+    return `<div class="history-item" onclick="load${type === 'crc' ? 'Crc' : 'Chk'}History(${i})">
+      <span class="data">${h.data}</span>
+      <span><span class="chk">${h.chk}</span> ${status}</span>
+    </div>`;
+  }).join('');
+}
+
+function loadCrcHistory(i) {
+  document.getElementById('crcInput').value = crcHistory[i].data;
+  document.querySelector('input[name="crcMode"][value="calc"]').checked = true;
+  calcCrc();
+}
+
+function loadChkHistory(i) {
+  const h = chkHistory[i];
+  document.getElementById('chkInput').value = h.data;
+  document.querySelector('input[name="chkMode"][value="calc"]').checked = true;
+  calcChk();
+}
+
+/* ========== Keyboard Shortcuts ========== */
+document.getElementById('crcInput').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) calcCrc(); });
+document.getElementById('chkInput').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) calcChk(); });
+</script>
+</body>
+</html>
