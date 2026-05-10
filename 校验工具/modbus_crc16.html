@@ -467,7 +467,7 @@ function calcCrc() {
 
   if (mode === 'verify' && data.length >= 3) {
     const payload = data.slice(0, -2);
-    const recvCrc = (data[data.length - 2] << 8) | data[data.length - 1];
+    const recvCrc = (data[data.length - 1] << 8) | data[data.length - 2];
     const calcVal = crc16Modbus(payload);
     if (recvCrc === calcVal) {
       vRes.textContent = '校验通过！接收 0x' + recvCrc.toString(16).toUpperCase().padStart(4, '0') + ' = 计算 0x' + calcVal.toString(16).toUpperCase().padStart(4, '0');
